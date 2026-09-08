@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f3f8fa" />
+    <link
+      rel="icon"
+      href="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
+    />
+    <meta
+      name="description"
+      content="AI Шарометр — короткий фановий тест практичної AI-грамотності."
+    />
+    <title>AI Шарометр</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="questions.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">До основного вмісту</a>
+
+    <header class="site-header" aria-label="Шапка сайту">
+      <a class="brand" href="./" aria-label="AI Шарометр — на головну">
+        <span class="brand-mark" aria-hidden="true">
+          <span class="brand-needle"></span>
+        </span>
+        <span>AI Шарометр</span>
+      </a>
+    </header>
+
+    <main id="main-content" class="app-shell">
+      <section id="welcome-screen" class="screen welcome-screen" aria-labelledby="welcome-title">
+        <div class="welcome-copy">
+          <p class="eyebrow">10 питань · 4–5 хвилин</p>
+          <h1 id="welcome-title">Наскільки ти<br /><span>шариш за AI?</span></h1>
+          <p class="welcome-lead">
+            Від легкої розминки до справжнього AI-челенджу. Без нудних лекцій,
+            зате з чесними реакціями й сертифікатом у фіналі.
+          </p>
+
+          <button id="start-button" class="primary-button" type="button">
+            <span>Почати тест</span>
+            <span class="button-arrow" aria-hidden="true">→</span>
+          </button>
+
+        </div>
+
+        <div class="meter-panel" aria-hidden="true">
+          <div class="meter-orbit orbit-one"></div>
+          <div class="meter-orbit orbit-two"></div>
+          <div class="hero-meter">
+            <span class="meter-label meter-label-left">hmm</span>
+            <span class="meter-label meter-label-right">wow</span>
+            <div class="hero-needle"></div>
+            <div class="meter-center">AI</div>
+          </div>
+          <p>Твій рівень десь тут. Зараз знайдемо.</p>
+        </div>
+      </section>
+
+      <section id="quiz-screen" class="screen quiz-screen" aria-labelledby="question-title" hidden>
+        <div class="quiz-topline">
+          <div>
+            <p id="question-counter" class="eyebrow">Питання 1 із 10</p>
+            <p id="difficulty-label" class="difficulty-badge" data-level="easy">Легка розминка</p>
+          </div>
+          <button id="quit-button" class="text-button" type="button">Почати заново</button>
+        </div>
+
+        <div
+          id="progress-track"
+          class="progress-track"
+          role="progressbar"
+          aria-label="Прогрес тесту"
+          aria-valuemin="0"
+          aria-valuemax="10"
+          aria-valuenow="1"
+        >
+          <span id="progress-bar"></span>
+        </div>
+
+        <article class="question-card">
+          <p id="question-category" class="question-category">Промпти</p>
+          <h2 id="question-title">Запитання завантажується</h2>
+          <div id="answers" class="answers" role="group" aria-labelledby="question-title"></div>
+          <p class="keyboard-hint">Можна натиснути A–D або 1–4 на клавіатурі</p>
+        </article>
+      </section>
+
+      <section id="result-screen" class="screen result-screen" aria-labelledby="result-title" hidden>
+        <div class="result-summary">
+          <div class="score-ring" aria-hidden="true">
+            <span id="score-number">0%</span>
+            <small>AI form</small>
+          </div>
+          <div class="result-copy">
+            <p class="eyebrow">Фініш. І жодного нудного білета.</p>
+            <h1 id="result-title">Твій рівень</h1>
+            <p id="result-description" class="result-description"></p>
+            <div class="result-insights">
+              <div>
+                <span>Твоя суперсила</span>
+                <strong id="strength-text"></strong>
+              </div>
+              <div>
+                <span>Наступний левел</span>
+                <strong id="growth-text"></strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="certificate-section">
+          <div class="certificate-controls">
+            <p class="eyebrow">Жартівливий, але заслужений</p>
+            <h2>Забирай сертифікат</h2>
+            <label for="certificate-name">Ім’я на сертифікаті</label>
+            <input
+              id="certificate-name"
+              type="text"
+              maxlength="48"
+              autocomplete="name"
+              placeholder="Наприклад, Олена"
+            />
+            <div class="certificate-actions">
+              <button id="download-certificate" class="primary-button compact" type="button">
+                Завантажити PNG
+              </button>
+              <button id="copy-result" class="secondary-button" type="button">
+                Скопіювати результат
+              </button>
+            </div>
+            <button id="restart-button" class="text-button restart-button" type="button">
+              Пройти ще раз
+            </button>
+          </div>
+
+          <article id="certificate-preview" class="certificate" aria-label="Попередній перегляд сертифіката">
+            <div class="certificate-top">
+              <span class="certificate-mark" aria-hidden="true"></span>
+              <span>AI Шарометр</span>
+            </div>
+            <div class="certificate-body">
+              <p>Цим надзвичайно серйозним документом підтверджуємо, що</p>
+              <h3 id="certificate-name-preview">таємничий AI-ентузіаст</h3>
+              <p>пройшов 10 випробувань і отримав рівень</p>
+              <strong id="certificate-level"></strong>
+              <span id="certificate-score"></span>
+            </div>
+            <div class="certificate-footer">
+              <span id="certificate-date"></span>
+              <span>Печатка здорового AI-глузду</span>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>AI Шарометр такого собі серйозного рівня</span>
+    </footer>
+
+    <dialog id="feedback-dialog" class="feedback-dialog" aria-labelledby="feedback-title">
+      <div id="feedback-score" class="feedback-score" aria-hidden="true">+3</div>
+      <p class="eyebrow">Реакція AI Шарометра</p>
+      <h2 id="feedback-title">Сильний хід</h2>
+      <p id="feedback-text"></p>
+      <button id="next-button" class="primary-button" type="button">Далі</button>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
