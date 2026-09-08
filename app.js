@@ -61,7 +61,7 @@
     light: {
       themeColor: "#f2f7ff",
       certificateTitle: "СЕРТИФІКАТ AI НА ЧІЛІ",
-      certificateSeal: "Печатка синьої пігулки",
+      certificateSeal: "Синій режим",
       accent: "#1677ff",
       accentDark: "#0d5cba",
       accentSoft: "#dcecff",
@@ -70,7 +70,7 @@
     hard: {
       themeColor: "#fff5f6",
       certificateTitle: "СЕРТИФІКАТ ГЛИБОКОЇ AI-НОРИ",
-      certificateSeal: "Печатка червоної пігулки",
+      certificateSeal: "Червоний режим",
       accent: "#db2c4b",
       accentDark: "#991b32",
       accentSoft: "#ffe0e6",
@@ -134,7 +134,7 @@
     3: [
       "AI аплодує стоячи",
       "Оце ти красиво зайшов",
-      "Синя пігулка працює",
+      "Синій режим увімкнено",
       "Майстер легкого AI",
       "Бум! Просто в яблучко",
     ],
@@ -455,7 +455,7 @@
       return {
         title: "Верховний приборкувач AI",
         description:
-          "Ти пройшов синю пігулку так, ніби сам писав інструкцію до Матриці. AI слухається, інструменти не плутаються, а цифрові граблі чемно переходять на інший бік дороги.",
+          "Ого! А ти впевнений, що обрав потрібний рівень? AI слухається, інструменти не плутаються, а цифрові граблі чемно переходять на інший бік дороги.",
       };
     }
 
@@ -673,7 +673,7 @@
 
   async function copyResult() {
     const percent = Math.round((state.score / MAX_SCORE) * 100);
-    const modeLabel = state.mode === "light" ? "синя пігулка · AI на чілі" : "червона пігулка · AI без страховки";
+    const modeLabel = state.mode === "light" ? "синій режим · AI на чілі" : "червоний режим · AI без страховки";
     const text = `Мій результат в AI Шарометрі (${modeLabel}): ${state.profile.title} — ${state.score}/${MAX_SCORE} (${percent}%).`;
 
     try {
