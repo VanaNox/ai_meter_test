@@ -15,6 +15,7 @@
     <title>AI Шарометр</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="questions.js" defer></script>
+    <script src="light-questions.js" defer></script>
     <script src="app.js" defer></script>
   </head>
   <body>
@@ -150,7 +151,7 @@
             </div>
             <div class="certificate-footer">
               <span id="certificate-date"></span>
-              <span>Печатка здорового AI-глузду</span>
+              <span id="certificate-seal">Печатка здорового AI-глузду</span>
             </div>
           </article>
         </div>
@@ -160,6 +161,42 @@
     <footer class="site-footer">
       <span>AI Шарометр такого собі серйозного рівня</span>
     </footer>
+
+    <dialog id="mode-dialog" class="mode-dialog" aria-labelledby="mode-title">
+      <div class="matrix-code" aria-hidden="true">01 10 01 11 00 10 01</div>
+      <div class="mode-dialog-copy">
+        <p class="eyebrow">Момент істини</p>
+        <h2 id="mode-title">Обери свою AI-реальність</h2>
+        <p>
+          Можна піти легкою стежкою з мемами або перевірити, наскільки глибока
+          AI-кроляча нора. Сертифікат буде в обох випадках — ми ж не монстри.
+        </p>
+      </div>
+
+      <div class="mode-grid">
+        <button class="mode-card mode-card-light" type="button" data-quiz-mode="light">
+          <span class="pill pill-blue" aria-hidden="true"></span>
+          <span class="mode-kicker">Синя пігулка</span>
+          <strong>AI на чілі</strong>
+          <span class="mode-description">
+            Що AI вміє, де живуть його інструменти й чому каву досі вариш ти.
+          </span>
+          <span class="mode-action">Додати більше сміху →</span>
+        </button>
+
+        <button class="mode-card mode-card-hard" type="button" data-quiz-mode="hard">
+          <span class="pill pill-red" aria-hidden="true"></span>
+          <span class="mode-kicker">Червона пігулка</span>
+          <strong>AI без страховки</strong>
+          <span class="mode-description">
+            Промпти, перевірка, безпека й інші місця, де цифрові граблі чатують у темряві.
+          </span>
+          <span class="mode-action">Показати, що я шарю →</span>
+        </button>
+      </div>
+
+      <button id="mode-close" class="text-button mode-close" type="button">Я ще подумаю</button>
+    </dialog>
 
     <dialog id="feedback-dialog" class="feedback-dialog" aria-labelledby="feedback-title">
       <div id="feedback-score" class="feedback-score" aria-hidden="true">+3</div>
