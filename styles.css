@@ -474,23 +474,44 @@ p {
 
 .meter-panel {
   position: relative;
+  width: 100%;
   min-height: 430px;
   display: grid;
   place-items: center;
+  padding: 0;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.7);
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 78% 15%, rgba(68, 205, 228, 0.2), transparent 48%),
+    radial-gradient(circle at 6% 94%, rgba(102, 86, 217, 0.13), transparent 44%),
+    rgba(255, 255, 255, 0.76);
   border: 1px solid rgba(255, 255, 255, 0.88);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow);
+  cursor: pointer;
   isolation: isolate;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.meter-panel > p {
+.meter-panel::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  border-radius: calc(var(--radius-xl) - 1px);
+  pointer-events: none;
+}
+
+.meter-caption {
   position: absolute;
   bottom: 22px;
-  margin: 0;
+  width: calc(100% - 32px);
   color: var(--muted);
   font-size: 14px;
+  font-weight: 500;
+  text-align: center;
 }
 
 .meter-orbit {
@@ -517,82 +538,183 @@ p {
   background: var(--violet-soft);
 }
 
+.meter-glass-shell {
+  position: relative;
+  width: 292px;
+  height: 292px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.96);
+  border-radius: 50%;
+  box-shadow:
+    0 26px 55px rgba(31, 88, 109, 0.14),
+    inset 0 0 34px rgba(255, 255, 255, 0.95),
+    0 0 42px rgba(0, 166, 199, 0.11);
+  transition: transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 260ms ease;
+}
+
+.meter-panel:hover .meter-glass-shell {
+  box-shadow:
+    0 30px 65px rgba(31, 88, 109, 0.18),
+    inset 0 0 38px rgba(255, 255, 255, 0.98),
+    0 0 54px rgba(0, 166, 199, 0.16);
+  transform: scale(1.015);
+}
+
+.meter-panel:active .meter-glass-shell {
+  transform: scale(0.99);
+}
+
 .hero-meter {
   position: relative;
-  width: 260px;
-  height: 260px;
-  border: 30px solid #dff1f4;
-  border-top-color: var(--brand);
-  border-right-color: var(--violet);
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
-  transform: rotate(-45deg);
+  --needle-angle: -28deg;
 }
 
 .hero-meter::before,
 .hero-meter::after {
   content: "";
   position: absolute;
-  inset: 24px;
-  border: 2px dashed rgba(16, 34, 48, 0.14);
   border-radius: 50%;
 }
 
+.hero-meter::before {
+  inset: 0;
+  background: conic-gradient(
+    from 220deg,
+    #dceff2 0deg 64deg,
+    #08a9c7 76deg,
+    #24cde0 148deg,
+    #6656d9 252deg,
+    #dceff2 264deg 360deg
+  );
+  filter: drop-shadow(0 8px 14px rgba(51, 80, 146, 0.14));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 31px), #000 calc(100% - 30px));
+}
+
 .hero-meter::after {
-  inset: 53px;
-  background: var(--surface);
-  border: 0;
-  box-shadow: 0 10px 30px rgba(29, 70, 86, 0.13);
+  inset: 29%;
+  z-index: 3;
+  background:
+    radial-gradient(circle at 38% 32%, #fff, rgba(255, 255, 255, 0.82) 58%, rgba(238, 247, 250, 0.94));
+  border: 1px solid rgba(255, 255, 255, 0.98);
+  box-shadow:
+    0 12px 30px rgba(29, 70, 86, 0.13),
+    inset 0 0 22px #fff;
+}
+
+.meter-ticks {
+  position: absolute;
+  inset: 19%;
+  z-index: 1;
+  background: repeating-conic-gradient(
+    from -2deg,
+    transparent 0deg 8deg,
+    rgba(62, 91, 110, 0.28) 8deg 9deg
+  );
+  border-radius: 50%;
+  mask: radial-gradient(farthest-side, transparent calc(100% - 7px), #000 calc(100% - 6px));
+}
+
+.meter-ticks::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border: 2px dashed rgba(82, 112, 130, 0.18);
+  border-radius: 50%;
 }
 
 .hero-needle {
   position: absolute;
-  z-index: 2;
+  inset: 0;
+  z-index: 4;
+  border-radius: 50%;
+  transform: rotate(var(--needle-angle));
+  will-change: transform;
+}
+
+.hero-needle > span {
+  position: absolute;
+  top: 50%;
   left: 50%;
-  bottom: 50%;
-  width: 7px;
-  height: 82px;
-  background: var(--peach);
-  border-radius: 999px;
-  transform: translateX(-50%) rotate(122deg);
-  transform-origin: bottom;
-  animation: needle-in 700ms cubic-bezier(0.2, 0.9, 0.25, 1.15) both;
+  width: 39%;
+  height: 8px;
+  background: linear-gradient(90deg, #ff776c, #ff9c83);
+  border-radius: 0 999px 999px 0;
+  box-shadow: 0 6px 16px rgba(255, 119, 108, 0.24);
+  transform: translateY(-50%);
+  transform-origin: left center;
+}
+
+.hero-needle > span::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -8px;
+  width: 18px;
+  height: 18px;
+  background: #ff776c;
+  border: 3px solid rgba(255, 255, 255, 0.88);
+  border-radius: 50%;
+  box-shadow: 0 5px 14px rgba(65, 83, 96, 0.2);
+  transform: translateY(-50%);
 }
 
 .meter-center {
   position: absolute;
-  z-index: 3;
+  z-index: 5;
   inset: 0;
   display: grid;
   place-items: center;
-  font-size: 38px;
+  font-size: 42px;
   font-weight: 850;
   letter-spacing: -0.08em;
-  transform: rotate(45deg);
 }
 
 .meter-label {
   position: absolute;
-  z-index: 4;
-  color: var(--muted);
-  font-size: 12px;
+  z-index: 6;
+  color: #536674;
+  font-size: 13px;
   font-weight: 800;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  transform: rotate(45deg);
 }
 
-.meter-label-left {
-  left: 0;
-  bottom: 12px;
+.meter-label-top {
+  top: 3px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.meter-label-right {
-  top: 12px;
-  right: -2px;
+.meter-label-bottom {
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-@keyframes needle-in {
-  from {
-    transform: translateX(-50%) rotate(-45deg);
+.meter-dialog-score::after {
+  content: "%";
+  font-size: 13px;
+  margin-left: 1px;
+}
+
+.meter-dialog-score {
+  width: auto;
+  min-width: 64px;
+  padding-inline: 10px;
+}
+
+@media (hover: none) {
+  .meter-caption {
+    font-size: 0;
+  }
+
+  .meter-caption::after {
+    content: "Натисни на Шарометр — він щось підозрює.";
+    font-size: 14px;
   }
 }
 
@@ -1077,14 +1199,10 @@ p {
     min-height: 330px;
   }
 
-  .hero-meter {
-    width: 210px;
-    height: 210px;
-    border-width: 24px;
-  }
-
-  .hero-needle {
-    height: 66px;
+  .meter-glass-shell {
+    width: 238px;
+    height: 238px;
+    padding: 12px;
   }
 
   .result-summary {
@@ -1212,14 +1330,10 @@ p {
     min-height: 350px;
   }
 
-  .hero-meter {
-    width: 220px;
-    height: 220px;
-    border-width: 24px;
-  }
-
-  .hero-needle {
-    height: 68px;
+  .meter-glass-shell {
+    width: 244px;
+    height: 244px;
+    padding: 12px;
   }
 
   .question-card {

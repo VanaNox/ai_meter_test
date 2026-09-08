@@ -9,6 +9,13 @@
     quiz: document.querySelector("#quiz-screen"),
     result: document.querySelector("#result-screen"),
     start: document.querySelector("#start-button"),
+    meterButton: document.querySelector("#hero-meter-button"),
+    heroMeter: document.querySelector(".hero-meter"),
+    meterDialog: document.querySelector("#meter-dialog"),
+    meterDialogScore: document.querySelector("#meter-dialog-score"),
+    meterReactionTitle: document.querySelector("#meter-reaction-title"),
+    meterReactionText: document.querySelector("#meter-reaction-text"),
+    meterDialogClose: document.querySelector("#meter-dialog-close"),
     modeDialog: document.querySelector("#mode-dialog"),
     modeClose: document.querySelector("#mode-close"),
     modeButtons: [...document.querySelectorAll("[data-quiz-mode]")],
@@ -77,6 +84,37 @@
       secondarySoft: "#ffe8e4",
     },
   };
+
+  const meterReactions = [
+    {
+      max: 24,
+      title: "AI ще в піжамі",
+      text: (value) =>
+        `Шарометр показує ${value}%. Схоже, нейромережі сьогодні без кави. Але спокійно: потенціал уже прокинувся й шукає капці.`,
+      button: "Розбудимо поступово",
+    },
+    {
+      max: 49,
+      title: "Потенціал завантажується",
+      text: (value) =>
+        `${value}% — тут уже щось є: трохи цікавості, трохи магії та один промпт «зроби нормально». До AI-суперсили залишилося кілька оновлень.`,
+      button: "Оновлення прийнято",
+    },
+    {
+      max: 74,
+      title: "Ого, тут уже іскрить",
+      text: (value) =>
+        `${value}% AI-вайбу. Ще трохи — і колеги почнуть писати тобі: «А який промпт ти використав?». Шарометр схвально гуде.`,
+      button: "Гудіння зараховано",
+    },
+    {
+      max: 100,
+      title: "Підозріло сильний AI-вайб",
+      text: (value) =>
+        `${value}%! А ти точно не підкрутив стрілку? Шарометр нервує, курсор поважає, а цифрові граблі чемно ховаються.`,
+      button: "Зрозуміло, я легенда",
+    },
+  ];
 
   const feedbackTitles = {
     0: [
@@ -234,6 +272,57 @@
   };
 
   let toastTimer = null;
+  const meterMotion = {
+    currentAngle: -28,
+    targetAngle: -28,
+    value: 72,
+    frame: 0,
+    reduced: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  };
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function animateMeterNeedle() {
+    const rawDelta = meterMotion.targetAngle - meterMotion.currentAngle;
+    const delta = ((rawDelta + 540) % 360) - 180;
+
+    if (meterMotion.reduced || Math.abs(delta) < 0.08) {
+      meterMotion.currentAngle = meterMotion.targetAngle;
+      elements.heroMeter.style.setProperty("--needle-angle", `${meterMotion.currentAngle}deg`);
+      meterMotion.frame = 0;
+      return;
+    }
+
+    meterMotion.currentAngle += delta * 0.13;
+    elements.heroMeter.style.setProperty("--needle-angle", `${meterMotion.currentAngle}deg`);
+    meterMotion.frame = window.requestAnimationFrame(animateMeterNeedle);
+  }
+
+  function updateMeterFromPointer(event) {
+    const rect = elements.heroMeter.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    meterMotion.targetAngle =
+      (Math.atan2(event.clientY - centerY, event.clientX - centerX) * 180) / Math.PI;
+    meterMotion.value = Math.round(
+      clamp(100 - ((event.clientY - rect.top) / rect.height) * 100, 0, 100),
+    );
+
+    if (!meterMotion.frame) meterMotion.frame = window.requestAnimationFrame(animateMeterNeedle);
+  }
+
+  function openMeterReaction(event) {
+    if (Number.isFinite(event.clientX) && event.clientX > 0) updateMeterFromPointer(event);
+    const reaction = meterReactions.find((item) => meterMotion.value <= item.max) || meterReactions.at(-1);
+    elements.meterDialogScore.textContent = String(meterMotion.value);
+    elements.meterReactionTitle.textContent = reaction.title;
+    elements.meterReactionText.textContent = reaction.text(meterMotion.value);
+    elements.meterDialogClose.textContent = reaction.button;
+    elements.meterDialog.showModal();
+    elements.meterDialogClose.focus();
+  }
 
   function hashSeed(value) {
     let hash = 2166136261;
@@ -727,6 +816,10 @@
   });
 
   elements.dialog.addEventListener("cancel", (event) => event.preventDefault());
+  elements.meterButton.addEventListener("pointermove", updateMeterFromPointer);
+  elements.meterButton.addEventListener("pointerdown", updateMeterFromPointer);
+  elements.meterButton.addEventListener("click", openMeterReaction);
+  elements.meterDialogClose.addEventListener("click", () => elements.meterDialog.close());
   elements.modeDialog.addEventListener("cancel", (event) => {
     event.preventDefault();
     closeModeChooser();

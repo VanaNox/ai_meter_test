@@ -47,17 +47,26 @@
 
         </div>
 
-        <div class="meter-panel" aria-hidden="true">
+        <button
+          id="hero-meter-button"
+          class="meter-panel"
+          type="button"
+          aria-label="Інтерактивний AI Шарометр. Рухай курсором, а потім натисни, щоб отримати прогноз."
+          aria-describedby="meter-caption"
+        >
           <div class="meter-orbit orbit-one"></div>
           <div class="meter-orbit orbit-two"></div>
-          <div class="hero-meter">
-            <span class="meter-label meter-label-left">hmm</span>
-            <span class="meter-label meter-label-right">wow</span>
-            <div class="hero-needle"></div>
-            <div class="meter-center">AI</div>
+          <div class="meter-glass-shell" aria-hidden="true">
+            <div class="hero-meter">
+              <span class="meter-ticks"></span>
+              <span class="meter-label meter-label-top">wow</span>
+              <span class="meter-label meter-label-bottom">hmm</span>
+              <span class="hero-needle"><span></span></span>
+              <span class="meter-center">AI</span>
+            </div>
           </div>
-          <p>Твій рівень десь тут. Зараз знайдемо.</p>
-        </div>
+          <span id="meter-caption" class="meter-caption">Твій рівень десь тут. Наведи й натисни.</span>
+        </button>
       </section>
 
       <section id="quiz-screen" class="screen quiz-screen" aria-labelledby="question-title" hidden>
@@ -161,6 +170,14 @@
     <footer class="site-footer">
       <span>AI Шарометр такого собі серйозного рівня</span>
     </footer>
+
+    <dialog id="meter-dialog" class="feedback-dialog meter-dialog" aria-labelledby="meter-reaction-title">
+      <div id="meter-dialog-score" class="feedback-score meter-dialog-score" aria-hidden="true">72</div>
+      <p class="eyebrow">Шарометр виніс вердикт</p>
+      <h2 id="meter-reaction-title">Ого, тут уже іскрить</h2>
+      <p id="meter-reaction-text"></p>
+      <button id="meter-dialog-close" class="primary-button" type="button">Зрозуміло, я легенда</button>
+    </dialog>
 
     <dialog id="mode-dialog" class="mode-dialog" aria-labelledby="mode-title">
       <div class="matrix-code" aria-hidden="true">01 10 01 11 00 10 01</div>
