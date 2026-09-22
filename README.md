@@ -35,6 +35,8 @@
 
 Позначте `tutorial_complete` як **Key event** у GA4: **Admin → Events → Mark as key event**. Для аналізу параметрів у звітах зареєструйте потрібні custom dimensions (наприклад `quiz_mode`, `score_percent`, `result_tier`, `question_difficulty`, `question_category`).
 
+Для точкової перевірки в DebugView відкрийте сайт із параметром `?ga_debug=1`, пройдіть кілька питань і перегляньте потік подій у **Admin → DebugView**. Режим діє лише для цього URL і не вмикає debug для звичайних відвідувачів.
+
 ## Локальний перегляд
 
 Відкрийте папку в локальному HTTP-сервері. Наприклад:
