@@ -4,6 +4,15 @@
   const TOTAL_QUESTIONS = 10;
   const MAX_SCORE = 30;
 
+  // Keep analytics useful without sending a name, answer text, or any other personal data.
+  function trackEvent(eventName, parameters = {}) {
+    if (typeof window.gtag !== "function") return;
+    window.gtag("event", eventName, {
+      app_name: "ai_sharometr",
+      ...parameters,
+    });
+  }
+
   const elements = {
     welcome: document.querySelector("#welcome-screen"),
     quiz: document.querySelector("#quiz-screen"),
@@ -396,6 +405,11 @@
     document.body.dataset.mode = mode;
     elements.themeColor.content = modeMeta[mode].themeColor;
     elements.modeDialog.close();
+    trackEvent("quiz_mode_selected", { quiz_mode: mode });
+    trackEvent("tutorial_begin", {
+      tutorial_name: "ai_sharometr",
+      quiz_mode: mode,
+    });
     startQuiz();
   }
 
@@ -408,6 +422,7 @@
 
   function startQuiz() {
     if (!state.mode) {
+      trackEvent("quiz_start_clicked");
       openModeChooser();
       return;
     }
@@ -435,6 +450,14 @@
   function renderQuestion() {
     const question = state.questions[state.currentIndex];
     state.locked = false;
+
+    trackEvent("quiz_question_viewed", {
+      quiz_mode: state.mode,
+      question_index: state.currentIndex + 1,
+      question_id: question.id,
+      question_difficulty: question.difficulty,
+      question_category: question.category,
+    });
 
     elements.counter.textContent = `Питання ${state.currentIndex + 1} із ${TOTAL_QUESTIONS}`;
     elements.difficulty.textContent = difficultyLabels[state.mode][question.difficulty];
@@ -480,6 +503,16 @@
       score: option.score,
     });
 
+    trackEvent("quiz_question_answered", {
+      quiz_mode: state.mode,
+      question_index: state.currentIndex + 1,
+      question_id: question.id,
+      question_difficulty: question.difficulty,
+      question_category: question.category,
+      answer_option: option.id,
+      answer_score: option.score,
+    });
+
     const buttons = [...elements.answers.querySelectorAll("button")];
     buttons.forEach((button, index) => {
       button.disabled = true;
@@ -494,6 +527,11 @@
       state.currentIndex === TOTAL_QUESTIONS - 1 ? "Показати результат" : "Далі";
 
     elements.dialog.showModal();
+    trackEvent("quiz_feedback_viewed", {
+      quiz_mode: state.mode,
+      question_index: state.currentIndex + 1,
+      answer_score: option.score,
+    });
     elements.next.focus();
   }
 
@@ -625,6 +663,16 @@
 
     updateCertificateName();
     showScreen(elements.result);
+    trackEvent("tutorial_complete", {
+      tutorial_name: "ai_sharometr",
+      quiz_mode: state.mode,
+      score: state.score,
+      max_score: MAX_SCORE,
+      score_percent: percent,
+      result_tier: state.profile.title,
+      strength_domain: state.domainResult.strength,
+      growth_domain: state.domainResult.growth,
+    });
     elements.resultTitle.setAttribute("tabindex", "-1");
     elements.resultTitle.focus({ preventScroll: true });
   }
@@ -756,6 +804,11 @@
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
+      trackEvent("certificate_downloaded", {
+        quiz_mode: state.mode,
+        score_percent: percent,
+        result_tier: state.profile.title,
+      });
       showToast("Сертифікат завантажено. Рамку обираєш самостійно.");
     }, "image/png");
   }
@@ -780,6 +833,14 @@
       area.remove();
       showToast("Результат скопійовано.");
     }
+
+    trackEvent("share", {
+      method: "clipboard",
+      content_type: "quiz_result",
+      item_id: "ai_sharometr",
+      quiz_mode: state.mode,
+      score_percent: percent,
+    });
   }
 
   function showToast(message) {
@@ -790,6 +851,12 @@
   }
 
   function resetToWelcome() {
+    if (state.mode && state.answers.length < TOTAL_QUESTIONS) {
+      trackEvent("quiz_exited", {
+        quiz_mode: state.mode,
+        questions_answered: state.answers.length,
+      });
+    }
     if (elements.dialog.open) elements.dialog.close();
     if (elements.modeDialog.open) elements.modeDialog.close();
     state.mode = null;
@@ -831,7 +898,10 @@
   });
   elements.next.addEventListener("click", continueQuiz);
   elements.quit.addEventListener("click", resetToWelcome);
-  elements.restart.addEventListener("click", startQuiz);
+  elements.restart.addEventListener("click", () => {
+    trackEvent("quiz_restarted", { quiz_mode: state.mode });
+    startQuiz();
+  });
   elements.nameInput.addEventListener("input", updateCertificateName);
   elements.download.addEventListener("click", downloadCertificate);
   elements.copy.addEventListener("click", copyResult);
